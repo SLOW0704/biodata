@@ -1,0 +1,149 @@
+F5::
+
+Mouseclick,left,55, 1067
+sleep, 1000
+Send,smart
+sleep, 100
+Send, {enter} 
+sleep, 1000
+
+sleep, 5000
+WinActivate SMARTLoader.exe
+Send, 112994
+Send, {Tab}
+Send, rewqrewq11
+Send, {enter} 
+sleep, 1000
+Send, {enter} 
+sleep, 1000
+Coordmode,Mouse,client
+WinActivate CSM001F6 - 사용자 진료장소 선택
+sleep, 1000
+Mouseclick,left,170,40
+sleep, 1000
+Mouseclick,left,180,260
+sleep, 10000
+CoordMode, Mouse, Screen
+ImageSearch, x1, y1, 25, 30, 2000, 2000, *50 C:\Users\slow0\smart_x.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Screen
+	Mousemove,x1, y1,Screen
+    MouseClick,Left,x1, y1,Screen
+}
+sleep, 1000
+ImageSearch, x1, y1, 25, 30, 2000, 2000, *50 C:\Users\slow0\smart_x.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Screen
+	Mousemove,x1, y1,Screen
+    MouseClick,Left,x1, y1,Screen
+}
+sleep, 1000
+ImageSearch, x1, y1, 25, 30, 2000, 2000, *50 C:\Users\slow0\smart_x.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Screen
+	Mousemove,x1, y1,Screen
+    MouseClick,Left,x1, y1,Screen
+}
+sleep, 1000
+ImageSearch, x1, y1, 25, 30, 2000, 2000, *50 C:\Users\slow0\smart_x.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Screen
+	Mousemove,x1, y1,Screen
+    MouseClick,Left,x1, y1,Screen
+}
+sleep, 1000
+ImageSearch, x1, y1, 25, 30, 2000, 2000, *50 C:\Users\slow0\smart_x.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Screen
+	Mousemove,x1, y1,Screen
+    MouseClick,Left,x1, y1,Screen
+}
+sleep, 1000
+CoordMode, Mouse, Relative
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_emr.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_emr_diagnosis.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_emr_access.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+return
+
+
+F1::
+;엑셀에 있는 환자번호 불러와서 emr브라우저에 복사해 넣기
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\excel_logo.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+send,{Ctrl Down}{c}{Ctrl Up}
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_logo.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_browsermainform_logo.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\emr_searchbox.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+sleep, 1000
+send,{Tab}
+sleep, 1000
+send,{Ctrl Down}{v}{Ctrl Up}
+sleep, 1000
+send,{Enter}
+MouseClick,Left,50, 460,Relative
+send,2000
+ImageSearch, x1, y1, -20, -20, 2000, 2000, *50 C:\Users\slow0\smart_search.png
+if(ErrorLevel = 0)
+{
+    CoordMode, Mouse, Relative
+	Mousemove,x1, y1,Relative
+    MouseClick,Left,x1, y1,Relative
+}
+else errorlevel = 1
+{
+ MsgBox, 못찾았다
+}
+return
