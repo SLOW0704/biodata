@@ -1,0 +1,185 @@
+
+Private Sub CommandButton1_Click()
+Dim a As Integer
+Dim b As Integer
+Dim c As String
+b = 7
+c = "우선확인"
+For a = 1 To 3000
+If Worksheets(c).Cells(a, 1) = TextBox0.Value Then
+TextBox1.Value = Worksheets(c).Cells(a, b)
+TextBox2.Value = Worksheets(c).Cells(a, b + 1)
+TextBox3.Value = Worksheets(c).Cells(a, b + 2)
+TextBox4.Value = Worksheets(c).Cells(a, b + 3)
+TextBox5.Value = Worksheets(c).Cells(a, b + 4)
+TextBox6.Value = Worksheets(c).Cells(a, b + 5)
+TextBox7.Value = Worksheets(c).Cells(a, b + 6)
+TextBox8.Value = Worksheets(c).Cells(a, b + 7)
+TextBox9.Value = Worksheets(c).Cells(a, b + 8)
+TextBox10.Value = Worksheets(c).Cells(a, b + 9)
+TextBox11.Value = Worksheets(c).Cells(a, b + 10)
+TextBox12.Value = Worksheets(c).Cells(a, b + 11)
+TextBox13.Value = Worksheets(c).Cells(a, b + 12)
+TextBox14.Value = Worksheets(c).Cells(a, b + 13)
+TextBox15.Value = Worksheets(c).Cells(a, b + 14)
+TextBox16.Value = Worksheets(c).Cells(a, b + 15)
+TextBox17.Value = Worksheets(c).Cells(a, b + 16)
+TextBox18.Value = Worksheets(c).Cells(a, b + 17)
+TextBox19.Value = Worksheets(c).Cells(a, b + 18)
+TextBox20.Value = Worksheets(c).Cells(a, b + 19)
+TextBox21.Value = Worksheets(c).Cells(a, b + 20)
+TextBox22.Value = Worksheets(c).Cells(a, b + 21)
+TextBox23.Value = Worksheets(c).Cells(a, b + 22)
+TextBox24.Value = Worksheets(c).Cells(a, b + 23)
+TextBox25.Value = Worksheets(c).Cells(a, b + 24)
+TextBox26.Value = Worksheets(c).Cells(a, b + 25)
+TextBox27.Value = Worksheets(c).Cells(a, b + 26)
+TextBox28.Value = Worksheets(c).Cells(a, b + 27)
+TextBox29.Value = Worksheets(c).Cells(a, b + 28)
+TextBox30.Value = Worksheets(c).Cells(a, b + 29)
+TextBox31.Value = Worksheets(c).Cells(a, b + 30)
+TextBox32.Value = Worksheets(c).Cells(a, b + 31)
+TextBox33.Value = Worksheets(c).Cells(a, b + 32)
+TextBox34.Value = Worksheets(c).Cells(a, b + 33)
+TextBox35.Value = Worksheets(c).Cells(a, b + 34)
+TextBox36.Value = Worksheets(c).Cells(a, b + 35)
+TextBox37.Value = Worksheets(c).Cells(a, b + 36)
+TextBox38.Value = Worksheets(c).Cells(a, b + 37)
+TextBox39.Value = Worksheets(c).Cells(a, b + 38)
+TextBox40.Value = Worksheets(c).Cells(a, b + 39)
+TextBox41.Value = Worksheets(c).Cells(a, b + 40)
+TextBox42.Value = Worksheets(c).Cells(a, b + 41)
+TextBox43.Value = Worksheets(c).Cells(a, b + 42)
+TextBox44.Value = Worksheets(c).Cells(a, b + 43)
+TextBox45.Value = Worksheets(c).Cells(a, b + 44)
+TextBox46.Value = Worksheets(c).Cells(a, b + 45)
+TextBox47.Value = Worksheets(c).Cells(a, b + 46)
+TextBox48.Value = Worksheets(c).Cells(a, b + 47)
+TextBox49.Value = Worksheets(c).Cells(a, b + 48)
+TextBox50.Value = Worksheets(c).Cells(a, b + 49)
+TextBox51.Value = Worksheets(c).Cells(a, b + 50)
+TextBox52.Value = Worksheets(c).Cells(a, b + 51)
+TextBox53.Value = Worksheets(c).Cells(a, b + 52)
+TextBox54.Value = Worksheets(c).Cells(a, b + 53)
+TextBox55.Value = Worksheets(c).Cells(a, b + 54)
+TextBox56.Value = Worksheets(c).Cells(a, b + 55)
+TextBox57.Value = Worksheets(c).Cells(a, b + 56)
+TextBox58.Value = Worksheets(c).Cells(a, b + 57)
+TextBox59.Value = Worksheets(c).Cells(a, b + 58)
+TextBox60.Value = Worksheets(c).Cells(a, b + 59)
+
+
+
+
+End If
+Next
+End Sub
+
+Private Sub CommandButton2_Click()
+Dim a As Integer
+Dim b As Integer
+Dim c As String
+b = 7
+c = "우선확인"
+For a = 1 To 3000
+If Worksheets(c).Cells(a, 1) = TextBox0.Value Then
+Worksheets(c).Cells(a, b) = TextBox1.Value
+Worksheets(c).Cells(a, b + 1) = TextBox2.Value
+Worksheets(c).Cells(a, b + 2) = TextBox3.Value
+Worksheets(c).Cells(a, b + 3) = TextBox4.Value
+Worksheets(c).Cells(a, b + 4) = TextBox5.Value
+Worksheets(c).Cells(a, b + 5) = TextBox6.Value
+Worksheets(c).Cells(a, b + 6) = TextBox7.Value
+Worksheets(c).Cells(a, b + 7) = TextBox8.Value
+Worksheets(c).Cells(a, b + 8) = TextBox9.Value
+Worksheets(c).Cells(a, b + 9) = TextBox10.Value
+Worksheets(c).Cells(a, b + 10) = TextBox11.Value
+Worksheets(c).Cells(a, b + 11) = TextBox12.Value
+Worksheets(c).Cells(a, b + 12) = TextBox13.Value
+Worksheets(c).Cells(a, b + 13) = TextBox14.Value
+Worksheets(c).Cells(a, b + 14) = TextBox15.Value
+Worksheets(c).Cells(a, b + 15) = TextBox16.Value
+Worksheets(c).Cells(a, b + 16) = TextBox17.Value
+Worksheets(c).Cells(a, b + 17) = TextBox18.Value
+Worksheets(c).Cells(a, b + 18) = TextBox19.Value
+Worksheets(c).Cells(a, b + 19) = TextBox20.Value
+Worksheets(c).Cells(a, b + 20) = TextBox21.Value
+Worksheets(c).Cells(a, b + 21) = TextBox22.Value
+Worksheets(c).Cells(a, b + 22) = TextBox23.Value
+Worksheets(c).Cells(a, b + 23) = TextBox24.Value
+Worksheets(c).Cells(a, b + 24) = TextBox25.Value
+Worksheets(c).Cells(a, b + 25) = TextBox26.Value
+Worksheets(c).Cells(a, b + 26) = TextBox27.Value
+Worksheets(c).Cells(a, b + 27) = TextBox28.Value
+Worksheets(c).Cells(a, b + 28) = TextBox29.Value
+Worksheets(c).Cells(a, b + 29) = TextBox30.Value
+Worksheets(c).Cells(a, b + 30) = TextBox31.Value
+Worksheets(c).Cells(a, b + 31) = TextBox32.Value
+Worksheets(c).Cells(a, b + 32) = TextBox33.Value
+Worksheets(c).Cells(a, b + 33) = TextBox34.Value
+Worksheets(c).Cells(a, b + 34) = TextBox35.Value
+Worksheets(c).Cells(a, b + 35) = TextBox36.Value
+Worksheets(c).Cells(a, b + 36) = TextBox37.Value
+Worksheets(c).Cells(a, b + 37) = TextBox38.Value
+Worksheets(c).Cells(a, b + 38) = TextBox39.Value
+Worksheets(c).Cells(a, b + 39) = TextBox40.Value
+Worksheets(c).Cells(a, b + 40) = TextBox41.Value
+Worksheets(c).Cells(a, b + 41) = TextBox42.Value
+Worksheets(c).Cells(a, b + 42) = TextBox43.Value
+Worksheets(c).Cells(a, b + 43) = TextBox44.Value
+Worksheets(c).Cells(a, b + 44) = TextBox45.Value
+Worksheets(c).Cells(a, b + 45) = TextBox46.Value
+Worksheets(c).Cells(a, b + 46) = TextBox47.Value
+Worksheets(c).Cells(a, b + 47) = TextBox48.Value
+Worksheets(c).Cells(a, b + 48) = TextBox49.Value
+Worksheets(c).Cells(a, b + 49) = TextBox50.Value
+Worksheets(c).Cells(a, b + 50) = TextBox51.Value
+Worksheets(c).Cells(a, b + 51) = TextBox52.Value
+Worksheets(c).Cells(a, b + 52) = TextBox53.Value
+Worksheets(c).Cells(a, b + 53) = TextBox54.Value
+Worksheets(c).Cells(a, b + 54) = TextBox55.Value
+Worksheets(c).Cells(a, b + 55) = TextBox56.Value
+Worksheets(c).Cells(a, b + 56) = TextBox57.Value
+Worksheets(c).Cells(a, b + 57) = TextBox58.Value
+Worksheets(c).Cells(a, b + 58) = TextBox59.Value
+Worksheets(c).Cells(a, b + 59) = TextBox60.Value
+
+
+
+End If
+Next
+Unload Me
+
+End Sub
+
+Private Sub Label13_Click()
+
+End Sub
+
+Private Sub Label3_Click()
+
+End Sub
+
+Private Sub Label4_Click()
+
+End Sub
+
+Private Sub Label6_Click()
+
+End Sub
+
+Private Sub TextBox1_Change()
+
+End Sub
+
+Private Sub TextBox50_Change()
+
+End Sub
+
+Private Sub TextBox51_Change()
+
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
