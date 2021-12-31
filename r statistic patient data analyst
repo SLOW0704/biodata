@@ -1,0 +1,323 @@
+install.packages('lubridate')
+library(lubridate)
+install.packages('data.table')
+library(data.table)
+install.packages('dplyr')
+library(dplyr)
+-------------------------------------------------------------------------------------불러오기
+medication <- read.csv("~/sheet/(5)약처방.csv", header = T)
+medication1 <- read.csv("~/sheet/(6)table1 약처방력1(thyroid,parathyroid).csv", header = T)
+medication2 <- read.csv("~/sheet/(6) table1 약처방력2(antiosteoporotic).csv", header = T)
+medication3 <- read.csv("~/sheet/(6)table1 약처방력3(calcium,steroid,anticoagulant).csv", header = T)
+medication4 <- read.csv("~/sheet/(6)table1 약처방력4(antiepileptic).csv", header = T)
+medication5 <- read.csv("~/sheet/(6)table1 약처방력5(hirmone).csv", header = T)
+-------------------------------------------------------------------------------------7자리 맞추기
+medication <- transform(medication, 환자ID = sprintf("%07d", 환자ID))
+medication1 <- transform(medication1, 환자ID = sprintf("%07d", 환자ID))
+medication2 <- transform(medication2, 환자ID = sprintf("%07d", 환자ID))
+medication3 <- transform(medication3, 환자ID = sprintf("%07d", 환자ID))
+medication4 <- transform(medication4, 환자ID = sprintf("%07d", 환자ID))
+medication5 <- transform(medication5, 환자ID = sprintf("%07d", 환자ID))
+-------------------------------------------------------------------------------------순서정렬
+install.packages("dplyr")
+library(dplyr)
+medication <-arrange(medication,환자ID,처방일자)
+medication1 <-arrange(medication1,환자ID,처방일자)
+medication2 <-arrange(medication2,환자ID,처방일자)
+medication3 <-arrange(medication3,환자ID,처방일자)
+medication4 <-arrange(medication4,환자ID,처방일자)
+medication5 <-arrange(medication5,환자ID,처방일자)
+-------------------------------------------------------------------------------------투약종료일 열 만들기
+medication$예정_투약종료일 <- as.Date(medication$처방일자)+medication$일수
+medication1$예정_투약종료일 <- as.Date(medication1$처방일자)+medication1$일수
+medication2$예정_투약종료일 <- as.Date(medication2$처방일자)+medication2$일수
+medication3$예정_투약종료일 <- as.Date(medication3$처방일자)+medication3$일수
+medication4$예정_투약종료일 <- as.Date(medication4$처방일자)+medication4$일수
+medication5$예정_투약종료일 <- as.Date(medication5$처방일자)+medication5$일수
+-------------------------------------------------------------------------------------약 분류 변경하기
+1 M_thy
+2 M_ops
+3 M_cal
+4 M_a_con
+5 M_h
+6 M_ste
+7 M_a_co
+names(medication1) <-  names(medication) 
+names(medication2) <-  names(medication) 
+names(medication3) <-  names(medication) 
+names(medication4) <-  names(medication) 
+names(medication5) <-  names(medication) 
+1에서 2로 옮기기
+medication2 <- rbind(medication2,medication1[grep("Forsteo",medication1$영문처방명),])
+medication1<- medication1[-grep("Forsteo",medication1$영문처방명),]
+2에서 필요없는거 지우기
+medication2<- medication2[-grep("onel|livec|geva|abone",medication2$영문처방명),]
+2에서 5로 호르몬 옮기기
+medication5 <- rbind(medication5,medication2[grep("Nolvadex|Tamoxifen",medication2$영문처방명),])
+medication2<- medication2[-grep("Nolvadex|Tamoxifen",medication2$영문처방명),]
+3에서 6,7으로
+medication6 <- medication3[grep("Cortisolu|Cotico|Methylon|METhylon|Hyroxon",medication3$영문처방명),]
+medication7 <- medication3[grep("Warfarin",medication3$영문처방명),]
+medication3<- medication3[-grep("Cortisolu|Cotico|Methylon|METhylon|Hyroxon|Warfarin",medication3$영문처방명),]
+5에서 해당사항 없는거 지우기
+medication5<- medication5[-grep("Crinone",medication5$영문처방명),]
+-------------------------------------------------------------------------------------2020이후인거 제외대상으로 하기
+install.packages("lubridate")
+library(lubridate)
+medication$deadline이후_여부 <- ifelse(year(as.Date(medication$처방일자))>2019,"제외대상","")
+medication2$deadline이후_여부 <- ifelse(year(as.Date(medication2$처방일자))>2019,"제외대상","")
+medication3$deadline이후_여부 <- ifelse(year(as.Date(medication3$처방일자))>2019,"제외대상","")
+medication4$deadline이후_여부 <- ifelse(year(as.Date(medication4$처방일자))>2019,"제외대상","")
+medication5$deadline이후_여부 <- ifelse(year(as.Date(medication5$처방일자))>2019,"제외대상","")
+medication6$deadline이후_여부 <- ifelse(year(as.Date(medication6$처방일자))>2019,"제외대상","")
+medication7$deadline이후_여부 <- ifelse(year(as.Date(medication7$처방일자))>2019,"제외대상","")
+-------------------------------------------------------------------------------------m_thy enroll 이전 목록화 중복제거
+medication1$enroll이전_여부 <- ifelse(as.Date(medication1$처방일자)>as.Date(medication1$진료일자),"제외대상","")
+medication1 <-subset(medication1,enroll이전_여부=="")
+medication1 <-medication1[-which(duplicated(medication1$환자ID)),]
+-------------------------------------------------------------------------------------enroll이전 제외대상으로 하기
+medication$enroll이전_여부 <- ifelse(as.Date(medication$예정_투약종료일)<as.Date(medication$진료일자),"제외대상","")
+medication2$enroll이전_여부 <- ifelse(as.Date(medication2$예정_투약종료일)<as.Date(medication2$진료일자),"제외대상","")
+medication3$enroll이전_여부 <- ifelse(as.Date(medication3$예정_투약종료일)<as.Date(medication3$진료일자),"제외대상","")
+medication4$enroll이전_여부 <- ifelse(as.Date(medication4$예정_투약종료일)<as.Date(medication4$진료일자),"제외대상","")
+medication5$enroll이전_여부 <- ifelse(as.Date(medication5$예정_투약종료일)<as.Date(medication5$진료일자),"제외대상","")
+medication6$enroll이전_여부 <- ifelse(as.Date(medication6$예정_투약종료일)<as.Date(medication6$진료일자),"제외대상","")
+medication7$enroll이전_여부 <- ifelse(as.Date(medication7$예정_투약종료일)<as.Date(medication7$진료일자),"제외대상","")
+-------------------------------------------------------------------------------------수정된 일수 표시하기
+medication$수정_일수 <- ifelse(medication$deadline이후_여부=="제외대상",0,ifelse(medication$enroll이전_여부=="제외대상",0,ifelse(as.Date(medication$예정_투약종료일)>as.Date(medication$진료일자)&as.Date(medication$진료일자)>as.Date(medication$처방일자),as.Date(medication$예정_투약종료일)-as.Date(medication$진료일자),ifelse(as.Date(medication$예정_투약종료일)>"2019-12-31"&"2019-12-31">as.Date(medication$처방일자),as.Date("2019-12-31")-as.Date(medication$처방일자),medication$일수))))
+medication5$수정_일수 <- ifelse(medication5$deadline이후_여부=="제외대상",0,ifelse(medication5$enroll이전_여부=="제외대상",0,ifelse(as.Date(medication5$예정_투약종료일)>as.Date(medication5$진료일자)&as.Date(medication5$진료일자)>as.Date(medication5$처방일자),as.Date(medication5$예정_투약종료일)-as.Date(medication5$진료일자),ifelse(as.Date(medication5$예정_투약종료일)>"2019-12-31"&"2019-12-31">as.Date(medication5$처방일자),as.Date("2019-12-31")-as.Date(medication5$처방일자),medication5$일수))))
+medication6$수정_일수 <- ifelse(medication6$deadline이후_여부=="제외대상",0,ifelse(medication6$enroll이전_여부=="제외대상",0,ifelse(as.Date(medication6$예정_투약종료일)>as.Date(medication6$진료일자)&as.Date(medication6$진료일자)>as.Date(medication6$처방일자),as.Date(medication6$예정_투약종료일)-as.Date(medication6$진료일자),ifelse(as.Date(medication6$예정_투약종료일)>"2019-12-31"&"2019-12-31">as.Date(medication6$처방일자),as.Date("2019-12-31")-as.Date(medication6$처방일자),medication6$일수))))
+-------------------------------------------------------------------------------------제외대상 제거
+medication <-subset(medication,enroll이전_여부==""&deadline이후_여부=="")
+medication2 <-subset(medication2,enroll이전_여부==""&deadline이후_여부=="")
+medication3 <-subset(medication3,enroll이전_여부==""&deadline이후_여부=="")
+medication4 <-subset(medication4,enroll이전_여부==""&deadline이후_여부=="")
+medication5 <-subset(medication5,enroll이전_여부==""&deadline이후_여부=="")
+medication6 <-subset(medication6,enroll이전_여부==""&deadline이후_여부=="")
+medication7 <-subset(medication7,enroll이전_여부==""&deadline이후_여부=="")
+-------------------------------------------------------------------------------------처방여부만 필요한 약품 중복제거
+medication2 <-medication2[-which(duplicated(medication2$환자ID)),]
+medication3 <-medication3[-which(duplicated(medication3$환자ID)),]
+medication4 <-medication4[-which(duplicated(medication4$환자ID)),]
+medication7 <-medication7[-which(duplicated(medication7$환자ID)),]
+-------------------------------------------------------------------------------------일수가 필요한 ste h 구하기
+h_days <-aggregate(medication5$수정_일수, by=list(medication5$환자ID), FUN=sum)
+ste_days <-aggregate(medication6$수정_일수, by=list(medication6$환자ID), FUN=sum)
+-------------------------------------------------------------------------------------특정 셀 없애기
+medication <- medication[,-c()]
+-------------------------------------------------------------------------------------숫자로 변경
+
+mode(medication$수정_일수) <- "numeric"
+mode(medication5$수정_일수) <- "numeric"
+mode(medication6$수정_일수) <- "numeric"
+-------------------------------------------------------------------------------------mg으로 구하기 levothyroxine 총투여량 계산
+install.packages("stringr")
+ library(stringr)
+
+medication$회당_용량 <- gsub("Synthyroid Tab|mg|SynthyroXINE Tab|SYNthyroXINE Tab |SYNthyROxine Tab |SYNthyroxine Tab |Synthyroxine Tab ","", medication$영문처방명)
+medication$회당_용량 <- gsub("\\(.*?\\)","50mcg", medication$회당_용량)
+medication$회당_용량 <- gsub("Comthyroid Tab","", medication$회당_용량)
+medication$회당_용량 <- ifelse(str_detect(medication$회당_용량, 'mcg')==TRUE,as.numeric(gsub("mcg","",medication$회당_용량))/1000,medication$회당_용량)
+medication$총_용량 <- as.numeric(medication$회당_용량)*medication$수정_일수*medication$투여량.포장단위.*medication$횟수
+
+-------------------------------------------------------------------------------------결측값을 0으로
+medication[is.na(medication)] <- 0
+-------------------------------------------------------------------------------------쓸모없는 열 없애기
+medication1 <- medication1[,c(1:11)]
+medication2 <- medication2[,c(1:11)]
+medication3 <- medication3[,c(1:11)]
+medication4 <- medication4[,c(1:11)]
+medication7 <- medication7[,c(1:11)]
+-------------------------------------------------------------------------------------csv 저장
+write.csv(medication, 'medication.csv')
+write.csv(medication1, 'medication1.csv')
+write.csv(medication2, 'medication2.csv')
+write.csv(medication3, 'medication3.csv')
+write.csv(medication4, 'medication4.csv')
+write.csv(medication5, 'medication5.csv')
+write.csv(medication6, 'medication6.csv')
+write.csv(medication7, 'medication7.csv')
+write.csv(medication7, 'medication7.csv')
+write.csv(ste_days, 'ste_days.csv')
+write.csv(h_days, 'h_days.csv')
+-------------------------------------------------------------------------------------특정 변수 기준으로 합하기
+
+levo_sum <-aggregate(medication$총_용량, by=list(medication$환자ID), FUN=sum)
+levo_days <-aggregate(medication$수정_일수, by=list(medication$환자ID), FUN=sum)
+levo_firstday <-medication[-which(duplicated(medication$환자ID)),]
+write.csv(levo_sum, 'levo_sum.csv')
+write.csv(levo_firstday, 'levo_firstday.csv')
+write.csv(levo_days, 'levo_days.csv')
+
+-------------------------------------------------------------------------------------
+blood <- transform(blood, 환자ID = sprintf("%07d", 환자ID))
+C73 <- transform(C73, 환자번호 = sprintf("%07d", 환자번호))
+C73_ID <- transform(C73_ID, 환자번호 = sprintf("%07d", 환자번호))
+diagnosis <- transform(diagnosis, 환자ID = sprintf("%07d", 환자ID))
+fracture <- transform(fracture, 환자ID = sprintf("%07d", 환자ID))
+operation <- transform(operation, 환자번호 = sprintf("%07d", 환자번호))
+
+install.packages("dplyr")
+library(dplyr)
+blood <- arrange(blood,환자ID,채혈일시)
+C73 <- arrange(C73,환자번호,진료일자)
+C73_ID <- arrange(C73_ID,환자번호,진료일자)
+diagnosis <- arrange(diagnosis,환자ID,진단일시)
+fracture <- arrange(fracture,환자ID,진단일시)
+operation <- arrange(operation,환자번호,진료일자)
+
+install.packages('lubridate')
+library(lubridate)
+install.packages('dplyr')
+library(dplyr)
+
+blood$deadline이후_여부 <- ifelse(year(as.Date(blood$채혈일시))>2019,"제외대상","")
+blood$enroll이전_여부 <- ifelse(as.Date(blood$채혈일시)<as.Date(blood$진료일자),"제외대상","")
+operation <- operation[,c(2,9)]
+names(operation) <-c('환자ID','수술일자')
+blood <- merge(blood,operation, by="환자ID")
+blood$수술이전_여부 <- ifelse(as.Date(blood$채혈일시)<as.Date(blood$수술일자),"제외대상","")
+blood_filter <- subset(blood,deadline이후_여부==""&enroll이전_여부==""&수술이전_여부=="")
+blood_filter <-arrange(blood_filter,환자ID,채혈일시)
+
+blood_t4진 <- subset(blood_filter,처방명=="Free T4(진단검사의학과)"|처방명=="T4(진단검사의학과)")
+blood_tg <- subset(blood_filter,처방명=="Thyroglobulin")
+blood_sCr <- subset(blood_filter,처방명=="Creatinine")
+blood_S_phos <- subset(blood_filter,처방명=="Inorganic Phosphate")
+blood_S_cal <- subset(blood_filter,처방명=="Calcium")
+blood_TSH <- subset(blood_filter,처방명=="TSH(90분)"|처방명=="TSH(진단검사의학과)"|처방명=="TSH(120분)")
+blood_eGFR <- subset(blood_filter,처방명=="estimated GFR")
+blood_t4핵 <- subset(blood_filter,처방명=="Free T4")
+blood_t4 <- subset(blood_filter,처방명=="Free T4"|처방명=="Free T4(진단검사의학과)"|처방명=="T4(진단검사의학과)")
+------------------------------------------------------------------------------------- 해도되고 안해도되는 이름 통일
+write.csv(blood_filter, 'blood_filter.csv')
+blood_filter$처방명 <-sub("Free T4(진단검사의학과)","Free T4진단검사의학과",blood_filter$처방명)
+blood_filter$처방명 <-sub("T4(진단검사의학과)","T4진단검사의학과",blood_filter$처방명)
+blood_filter$처방명 <-sub("TSH(90분)","TSH90분",blood_filter$처방명)
+blood_filter$처방명 <-sub("TSH(진단검사의학과)","TSH진단검사의학과",blood_filter$처방명)
+blood_filter$처방명 <-sub("TSH(120분)","TSH120분",blood_filter$처방명)
+
+
+-------------------------------------------------------------------------------------혈액검사 환자번호 정렬
+
+blood_tg <-arrange(blood_tg,환자ID,채혈일시)
+blood_sCr <-arrange(blood_sCr,환자ID,채혈일시)
+blood_S_phos <-arrange(blood_S_phos,환자ID,채혈일시)
+blood_S_cal <-arrange(blood_S_cal,환자ID,채혈일시)
+blood_eGFR <-arrange(blood_eGFR,환자ID,채혈일시)
+blood_t4 <-arrange(blood_t4,환자ID,채혈일시)
+blood_TSH <-arrange(blood_TSH,환자ID,채혈일시)
+blood_t4진 <-arrange(blood_t4진,환자ID,채혈일시)
+blood_t4핵 <-arrange(blood_t4핵,환자ID,채혈일시)
+-------------------------------------------------------------------------------------혈액검사 환자번호 중복제거
+
+blood_tg <-blood_tg[-which(duplicated(blood_tg$환자ID)),]
+blood_sCr <-blood_sCr[-which(duplicated(blood_sCr$환자ID)),]
+blood_S_phos <-blood_S_phos[-which(duplicated(blood_S_phos$환자ID)),]
+blood_S_cal <- blood_S_cal[-which(duplicated(blood_S_cal$환자ID)),]
+blood_eGFR <- blood_eGFR [-which(duplicated(blood_eGFR $환자ID)),]
+--------------------------------------------------------------------------------------가중평균 적용
+채혈일 사이 일수 구하기
+- 마지막채혈 변수에 '마지막채혈'이면 별도 변수로 표시하기, days 변수로 수술일로부터 채혈일로의 기간 구하기
+blood_t4$마지막채혈<-ifelse(blood_t4$환자ID==blood_t4[-1,]$환자ID,"","마지막채혈")
+blood_t4진$마지막채혈<-ifelse(blood_t4진$환자ID==blood_t4진[-1,]$환자ID,"","마지막채혈")
+blood_t4핵$마지막채혈<-ifelse(blood_t4핵$환자ID==blood_t4핵[-1,]$환자ID,"","마지막채혈")
+blood_TSH$마지막채혈<-ifelse(blood_TSH$환자ID==blood_TSH[-1,]$환자ID,"","마지막채혈")
+- days 변수에위에일자랑 아래일자 차이를 기간으로 주기
+blood_t4$days<-ifelse(shift(blood_t4$마지막채혈,n=1)!="마지막채혈",as.Date(blood_t4$채혈일시)-as.Date(shift(blood_t4$채혈일시,n=1)),as.Date(blood_t4$채혈일시)-as.Date(blood_t4$수술일자))
+blood_t4$days[is.na(blood_t4$days)] <-as.Date(blood_t4$채혈일시)-as.Date(blood_t4$수술일자)
+
+blood_TSH$days<-ifelse(shift(blood_TSH$마지막채혈,n=1)!="마지막채혈",as.Date(blood_TSH$채혈일시)-as.Date(shift(blood_TSH$채혈일시,n=1)),as.Date(blood_TSH$채혈일시)-as.Date(blood_TSH$수술일자))
+blood_TSH$days[is.na(blood_TSH$days)] <-as.Date(blood_TSH$채혈일시)-as.Date(blood_TSH$수술일자)
+- 누적용량 변수 만들어서 곱한 값 저장하기
+- 2번 데이터프레임 만들기
+- 마지막채혈인 환자 기준으로 정리하기,누적용량 변수를 합하기
+-수술일과 마지막채혈 사이의 기간 구하기
+
+--------------------------------------------------------------------------------------
+
+write.csv(blood_t4진, 'blood_t4진.csv')
+write.csv(blood_t4핵, 'blood_t4핵.csv')
+write.csv(blood_t4, 'blood_t4.csv')
+write.csv(blood_TSH, 'blood_TSH.csv')
+write.csv(blood_tg, 'blood_tg.csv')
+write.csv(blood_sCr, 'blood_sCr.csv')
+write.csv(blood_eGFR, 'blood_eGFR.csv')
+write.csv(blood_S_phos, 'blood_S_phos.csv')
+write.csv(blood_S_cal, 'blood_S_cal.csv')
+
+--------------------------------------------------------------------------------------
+diagnosis_diabetes <- diagnosis[grep("diabetes",diagnosis$진단명),]
+diagnosis_Hyperthyroidism <- diagnosis[grep("Hyperthyroidism",diagnosis$진단명),]
+diagnosis_Hypothyroidism <- diagnosis[grep("Hypothyroidism",diagnosis$진단명),]
+diagnosis_rheumatoid <- diagnosis[grep("rheumatoid",diagnosis$진단명),]
+diagnosis_ankylosing <- diagnosis[grep("rankylosing",diagnosis$진단명),]
+diagnosis_cirrhosis <- diagnosis[grep("cirrhosis",diagnosis$진단명),]
+diagnosis_renal <- diagnosis[grep("renal|kidney disease",diagnosis$진단명),]
+diagnosis_hemorrhage <- diagnosis[grep("hemorrhage",diagnosis$진단명),]
+diagnosis_dementia <- diagnosis[grep("dementia",diagnosis$진단명),]
+diagnosis_parkinson <- diagnosis[grep("parkinson",diagnosis$진단명),]
+diagnosis_cancer <- diagnosis[grep("cancer|malignant|tumor",diagnosis$진단명),]
+diagnosis_bmet <- diagnosis[grep("neoplasm of bone",diagnosis$진단명),]
+diagnosis_hpo <- diagnosis[grep("Hypothyroidism",diagnosis$진단명),]
+diagnosis_hpe <- diagnosis[grep("Hyperthyroidism|Thyrotoxicosis|Graves's  disease",diagnosis$진단명),]
+diagnosis_frac <- diagnosis[grep("",diagnosis$진단명),]
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+diagnosis_diabetes$enroll이전_여부 <- ifelse(as.Date(diagnosis_diabetes$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_diabetes2 <-subset(diagnosis_diabetes,enroll이전_여부=="")
+diagnosis_diabetes2 <-diagnosis_diabetes2[-which(duplicated(diagnosis_diabetes2$환자ID)),]
+
+diagnosis_rheumatoid$enroll이전_여부 <- ifelse(as.Date(diagnosis_rheumatoid$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_rheumatoid2 <-subset(diagnosis_rheumatoid,enroll이전_여부=="")
+diagnosis_rheumatoid2 <-diagnosis_rheumatoid2[-which(duplicated(diagnosis_rheumatoid2$환자ID)),]
+diagnosis_cirrhosis$enroll이전_여부 <- ifelse(as.Date(diagnosis_cirrhosis$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_cirrhosis2 <-subset(diagnosis_cirrhosis,enroll이전_여부=="")
+diagnosis_cirrhosis2 <-diagnosis_cirrhosis2[-which(duplicated(diagnosis_cirrhosis2$환자ID)),]
+diagnosis_renal$enroll이전_여부 <- ifelse(as.Date(diagnosis_renal$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_renal2 <-subset(diagnosis_renal,enroll이전_여부=="")
+diagnosis_renal2 <-diagnosis_renal2[-which(duplicated(diagnosis_renal2$환자ID)),]
+diagnosis_hemorrhage$enroll이전_여부 <- ifelse(as.Date(diagnosis_hemorrhage$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_hemorrhage2 <-subset(diagnosis_hemorrhage,enroll이전_여부=="")
+diagnosis_hemorrhage2 <-diagnosis_hemorrhage2[-which(duplicated(diagnosis_hemorrhage2$환자ID)),]
+diagnosis_dementia$enroll이전_여부 <- ifelse(as.Date(diagnosis_dementia$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_dementia2 <-subset(diagnosis_dementia,enroll이전_여부=="")
+diagnosis_dementia2 <-diagnosis_dementia2[-which(duplicated(diagnosis_dementia2$환자ID)),]
+diagnosis_parkinson$enroll이전_여부 <- ifelse(as.Date(diagnosis_parkinson$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_parkinson2 <-subset(diagnosis_parkinson,enroll이전_여부=="")
+diagnosis_parkinson2 <-diagnosis_parkinson2[-which(duplicated(diagnosis_parkinson2$환자ID)),]
+diagnosis_bmet$enroll이전_여부 <- ifelse(as.Date(diagnosis_bmet$진단일시)>as.Date("2019-12-31"),"제외대상","")
+diagnosis_bmet2 <-subset(diagnosis_bmet,enroll이전_여부=="")
+diagnosis_bmet2 <-diagnosis_bmet2[-which(duplicated(diagnosis_bmet2$환자ID)),]
+
+
+diagnosis_hpo$enroll이전_여부 <- ifelse(as.Date(diagnosis_hpo$진단일시)>as.Date(diagnosis_hpo$진료일자),"제외대상","")
+diagnosis_hpo2 <-subset(diagnosis_hpo,enroll이전_여부=="")
+diagnosis_hpo2 <-diagnosis_hpo2[-which(duplicated(diagnosis_hpo2$환자ID)),]
+diagnosis_hpe$enroll이전_여부 <- ifelse(as.Date(diagnosis_hpe$진단일시)>as.Date(diagnosis_hpe$진료일자),"제외대상","")
+diagnosis_hpe2 <-subset(diagnosis_hpe,enroll이전_여부=="")
+diagnosis_hpe2 <-diagnosis_hpe2[-which(duplicated(diagnosis_hpe2$환자ID)),]
+diagnosis_frac$enroll이전_여부 <- ifelse(as.Date(diagnosis_frac$진단일시)>as.Date(diagnosis_frac$진료일자),"제외대상","")
+diagnosis_frac2 <-subset(diagnosis_frac,enroll이전_여부=="")
+diagnosis_frac2 <-diagnosis_frac2[-which(duplicated(diagnosis_frac2$환자ID)),]
+
+-------------------------------------------------------------------------------------cancer 에서 thyroid 지우기
+diagnosis_cancer2 <- diagnosis_cancer[-grep("malignant neoplasm of thyroid gland",diagnosis_cancer$진단명),]
+diagnosis_cancer2 <-diagnosis_cancer2[-which(duplicated(diagnosis_cancer2$환자ID)),]
+-------------------------------------------------------------------------------------저장하기
+write.csv(diagnosis_diabetes2, 'diagnosis_diabetes2.csv')
+write.csv(diagnosis_rheumatoid2, 'diagnosis_rheumatoid2.csv')
+write.csv(diagnosis_cirrhosis2, 'diagnosis_cirrhosis2.csv')
+write.csv(diagnosis_renal2, 'diagnosis_renal2.csv')
+write.csv(diagnosis_dementia2, 'diagnosis_dementia2.csv')
+write.csv(diagnosis_parkinson2, 'diagnosis_parkinson2.csv')
+write.csv(diagnosis_bmet2, 'diagnosis_bmet2.csv')
+write.csv(diagnosis_hpo2, 'diagnosis_hpo2.csv')
+write.csv(diagnosis_hpe2, 'diagnosis_hpe2.csv')
+write.csv(diagnosis_frac2, 'diagnosis_frac2.csv')
+write.csv(diagnosis_cancer3, 'diagnosis_cancer3.csv')
+write.csv(fracture, 'fracture.csv')
+
+
+
